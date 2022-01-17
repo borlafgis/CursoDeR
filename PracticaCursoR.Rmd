@@ -1,0 +1,89 @@
+---
+title: "Practicas general"
+author: "Ignacio Borlaf Mena"
+date: "17/1/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# install.packages("palmerpenguins")
+knitr::opts_chunk$set(echo = TRUE)
+library(palmerpenguins)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+data(penguins, package = 'palmerpenguins')
+```
+
+## Number of individuals
+
+### Per species
+
+```{r spec_counts}
+penguins |>
+  group_by(species) |>
+  summarize(count=n())
+```
+### Per species and sex
+
+```{r spec_counts_sex}
+penguins |>
+  filter(!is.na(sex)) |>
+  group_by(species, sex) |>
+  summarize(count=n())
+```
+
+### Summary statistics
+
+#### DPLYR, output single-row tibble
+
+```{r stats_dplyr_across}
+penguins |>
+  group_by(species, sex) |>
+  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) |>
+  summarise(
+    across(everything(),
+           list(mean=mean, sd=sd, min=min, max=max),
+           na.rm=TRUE)
+    )
+```
+
+## Visualiztion
+
+### Barplot with the by-species count of individuals by island
+
+```{r barplot}
+color_list <- list(Chinstrap="purple", Gentoo="blue", Adelie="orange")
+ggplot(data = penguins) +
+  geom_bar(aes(x=island, fill=species)) +
+  scale_fill_manual(values = color_list)
+  
+```
+
+### Which species have been found in all three islands?
+
+Adelie
+
+### How many individuals have been sampled in the Dream island?
+
+```{r spec_counts_island}
+penguins |>
+  group_by(island) |>
+  count() |>
+  filter(island == "Dream") |>
+  select(n)
+```
+124
+
+### Boxplot
+```{r boxplot}
+penguins |>
+  filter(!is.na(sex)) |>
+  ggplot() +
+    geom_boxplot(aes(x=sex, y=body_mass_g)) +
+    facet_grid(cols = vars(species)) +
+    labs(x = "Sex", y = "Body mass (g)")
+```
+
+* Gentoo has the largest body weight
+* Chinstrap has the smalles difference in body weight between sexes
