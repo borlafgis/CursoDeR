@@ -405,33 +405,24 @@ pre code {
 <div id="dplyr-output-single-row-tibble" class="section level4">
 <h4>DPLYR, output single-row tibble</h4>
 <pre class="r"><code>penguins |&gt;
-  group_by(species, sex) |&gt;
+  # group_by(species, sex) |&gt;
   select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) |&gt;
   summarise(
     across(everything(),
-           list(mean=mean, sd=sd, min=min, max=max),
-           na.rm=TRUE)
-    )</code></pre>
-<pre><code>## Adding missing grouping variables: `species`, `sex`</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;species&#39;. You can override using the `.groups` argument.</code></pre>
-<pre><code>## # A tibble: 8 x 18
-## # Groups:   species [3]
-##   species   sex    bill_length_mm_mean bill_length_mm_sd bill_length_mm_min
-##   &lt;fct&gt;     &lt;fct&gt;                &lt;dbl&gt;             &lt;dbl&gt;              &lt;dbl&gt;
-## 1 Adelie    female                37.3              2.03               32.1
-## 2 Adelie    male                  40.4              2.28               34.6
-## 3 Adelie    &lt;NA&gt;                  37.8              2.80               34.1
-## 4 Chinstrap female                46.6              3.11               40.9
-## 5 Chinstrap male                  51.1              1.56               48.5
-## 6 Gentoo    female                45.6              2.05               40.9
-## 7 Gentoo    male                  49.5              2.72               44.4
-## 8 Gentoo    &lt;NA&gt;                  45.6              1.37               44.5
-## # ... with 13 more variables: bill_length_mm_max &lt;dbl&gt;,
-## #   bill_depth_mm_mean &lt;dbl&gt;, bill_depth_mm_sd &lt;dbl&gt;, bill_depth_mm_min &lt;dbl&gt;,
-## #   bill_depth_mm_max &lt;dbl&gt;, flipper_length_mm_mean &lt;dbl&gt;,
-## #   flipper_length_mm_sd &lt;dbl&gt;, flipper_length_mm_min &lt;int&gt;,
-## #   flipper_length_mm_max &lt;int&gt;, body_mass_g_mean &lt;dbl&gt;, body_mass_g_sd &lt;dbl&gt;,
-## #   body_mass_g_min &lt;int&gt;, body_mass_g_max &lt;int&gt;</code></pre>
+           list(min=min, mean=mean, sd=sd, max=max),
+           na.rm=TRUE,
+           .names = &quot;{.col}@{.fn}&quot;)
+    ) |&gt;
+  pivot_longer(cols = everything(),
+               names_to = c(&quot;stat&quot;, &quot;.value&quot;),
+               names_sep = &quot;@&quot;)</code></pre>
+<pre><code>## # A tibble: 4 x 5
+##   stat                 min   mean     sd    max
+##   &lt;chr&gt;              &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 bill_length_mm      32.1   43.9   5.46   59.6
+## 2 bill_depth_mm       13.1   17.2   1.97   21.5
+## 3 flipper_length_mm  172    201.   14.1   231  
+## 4 body_mass_g       2700   4202.  802.   6300</code></pre>
 </div>
 </div>
 </div>

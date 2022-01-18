@@ -38,14 +38,19 @@ penguins |>
 #### DPLYR, output single-row tibble
 
 ```{r stats_dplyr_across}
+
 penguins |>
-  group_by(species, sex) |>
+  # group_by(species, sex) |>
   select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) |>
   summarise(
     across(everything(),
-           list(mean=mean, sd=sd, min=min, max=max),
-           na.rm=TRUE)
-    )
+           list(min=min, mean=mean, sd=sd, max=max),
+           na.rm=TRUE,
+           .names = "{.col}@{.fn}")
+    ) |>
+  pivot_longer(cols = everything(),
+               names_to = c("stat", ".value"),
+               names_sep = "@")
 ```
 
 ## Visualiztion
