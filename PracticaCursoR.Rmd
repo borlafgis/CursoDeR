@@ -19,14 +19,14 @@ data(penguins, package = 'palmerpenguins')
 
 ### Per species
 
-```{r spec_counts}
+```{r spec_counts, warn=FALSE}
 penguins |>
   group_by(species) |>
   summarize(count=n())
 ```
 ### Per species and sex
 
-```{r spec_counts_sex}
+```{r spec_counts_sex, warn=FALSE}
 penguins |>
   filter(!is.na(sex)) |>
   group_by(species, sex) |>
@@ -41,17 +41,13 @@ penguins |>
 
 col_vector <- c("bill_length_mm", "bill_depth_mm",
                 "flipper_length_mm", "body_mass_g")
-naming_style <- "{.col}@{.fn}"
-
+sep <- "@"
+naming <- paste("{.col}", "{.fn}", sep = sep)
 stat_list <- list(min=min, mean=mean, sd=sd, max=max)
+
 penguins |>
-  # group_by(species, sex) |>
-  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) |>
-  summarise(
-    across(col_vector, stat_list, na.rm=TRUE, .names = naming_style)) |>
-  pivot_longer(cols = everything(),
-               names_to = c("variable", ".value"),
-               names_sep = "@")
+  summarise(across(col_vector, stat_list, na.rm=TRUE, .names = naming)) |>
+  pivot_longer(everything(), names_to = c("var", ".value"), names_sep = sep)
 ```
 
 ## Visualiztion
