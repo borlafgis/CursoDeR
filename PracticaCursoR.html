@@ -408,22 +408,19 @@ pre code {
                 &quot;flipper_length_mm&quot;, &quot;body_mass_g&quot;)
 sep &lt;- &quot;@&quot;
 naming &lt;- paste(&quot;{.fn}&quot;, &quot;{.col}&quot;, sep = sep)
-stat_list &lt;- list(min=min, mean=mean, sd=sd, max=max)
+stat_list &lt;- list(min=min, mean=mean, max=max, sd=sd)
 
 penguins |&gt;
-  summarise(across(col_vector, stat_list, na.rm=TRUE, .names = naming)) |&gt;
+  summarise(
+    across(all_of(col_vector), stat_list, na.rm=TRUE, .names = naming)) |&gt;
   pivot_longer(everything(), names_to = c(&quot;stat&quot;, &quot;.value&quot;), names_sep = sep)</code></pre>
-<pre><code>## Note: Using an external vector in selections is ambiguous.
-## i Use `all_of(col_vector)` instead of `col_vector` to silence this message.
-## i See &lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&gt;.
-## This message is displayed once per session.</code></pre>
 <pre><code>## # A tibble: 4 x 5
 ##   stat  bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
 ##   &lt;chr&gt;          &lt;dbl&gt;         &lt;dbl&gt;             &lt;dbl&gt;       &lt;dbl&gt;
 ## 1 min            32.1          13.1              172         2700 
 ## 2 mean           43.9          17.2              201.        4202.
-## 3 sd              5.46          1.97              14.1        802.
-## 4 max            59.6          21.5              231         6300</code></pre>
+## 3 max            59.6          21.5              231         6300 
+## 4 sd              5.46          1.97              14.1        802.</code></pre>
 </div>
 </div>
 </div>
