@@ -42,12 +42,12 @@ penguins |>
 col_vector <- c("bill_length_mm", "bill_depth_mm",
                 "flipper_length_mm", "body_mass_g")
 sep <- "@"
-naming <- paste("{.col}", "{.fn}", sep = sep)
+naming <- paste("{.fn}", "{.col}", sep = sep)
 stat_list <- list(min=min, mean=mean, sd=sd, max=max)
 
 penguins |>
   summarise(across(col_vector, stat_list, na.rm=TRUE, .names = naming)) |>
-  pivot_longer(everything(), names_to = c("var", ".value"), names_sep = sep)
+  pivot_longer(everything(), names_to = c("stat", ".value"), names_sep = sep)
 ```
 
 ## Visualiztion
@@ -82,7 +82,7 @@ penguins |>
 penguins |>
   filter(!is.na(sex)) |>
   ggplot() +
-    geom_boxplot(aes(x=sex, y=body_mass_g)) +
+    geom_boxplot(aes(x=sex, fill=sex, y=body_mass_g)) +
     facet_grid(cols = vars(species)) +
     labs(x = "Sex", y = "Body mass (g)")
 ```
